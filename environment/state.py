@@ -5,7 +5,7 @@ from utils.utils import Utils
 
 class State:
     def __init__(self, height: int, width: int, agent_names: List[str]) -> None:
-        self.height, self.width, self.agent_positions = height, width, {}
+        self.height, self.width, self.agent_positions, self.agent_n_steps, self.round_num = height, width, {}, {}, 0
 
         # Initialize the grid
         self.grid = []
@@ -121,12 +121,18 @@ class State:
 
             # Only move the agent if its desired new position is available
             if self.is_available(new_row, new_col):
+                # Update the number of steps the agent has taken if its new position is different
+                if (curr_row, curr_col) != (new_row, new_col):
+                    self.agent_n_steps[agent_name] = self.agent_n_steps.get(agent_name, 0) + 1
+
                 # The old position should now be available since the agent is moving
                 self.grid[curr_row][curr_col] = Utils.AVAILABLE
 
                 # Update the new position
                 self.grid[new_row][new_col] = agent_idx
                 self.agent_positions[agent_name] = (new_row, new_col)
+
+        self.round_num += 1
 
     def prey_surrounded(self) -> bool:
         curr_row, curr_col = self.agent_positions[Utils.PREY_NAME]
