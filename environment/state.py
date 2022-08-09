@@ -60,8 +60,7 @@ class State:
 
         return self.grid[row][col] == Utils.AVAILABLE
 
-    def neighboring_positions(self, agent_name: str) -> List[Tuple[int, int]]:
-        curr_row, curr_col = self.agent_positions[agent_name]
+    def neighboring_positions(self, curr_row: int, curr_col: int) -> List[Tuple[int, int]]:
         positions = []
 
         for movement in Utils.POSSIBLE_MOVEMENTS:

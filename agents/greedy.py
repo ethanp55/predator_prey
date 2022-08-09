@@ -14,7 +14,7 @@ class Greedy(Agent):
         if state.neighbors(prey_row, prey_col, curr_row, curr_col):
             return prey_row, prey_col
 
-        prey_neighboring_positions, min_dist, goal = state.neighboring_positions(Utils.PREY_NAME), np.inf, None
+        prey_neighboring_positions, min_dist, goal = state.neighboring_positions(prey_row, prey_col), np.inf, None
 
         for row, col in prey_neighboring_positions:
             dist = state.n_movements(curr_row, curr_col, row, col)
