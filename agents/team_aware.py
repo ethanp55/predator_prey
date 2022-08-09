@@ -84,8 +84,8 @@ class TeamAware(Agent):
 
     def act(self, state: State) -> Tuple[int, int]:
         prey_row, prey_col = state.agent_positions[Utils.PREY_NAME]
-        prey_neighboring_positions = state.neighboring_positions(prey_row, prey_col)
         curr_row, curr_col = state.agent_positions[self.name]
+        prey_neighboring_positions = state.neighboring_positions(prey_row, prey_col)
 
         # If we are already neighbors with the prey, try to move to its current position in case it moves
         if state.neighbors(prey_row, prey_col, curr_row, curr_col):
