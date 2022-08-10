@@ -5,3 +5,4 @@ class Utils(object):
     POSSIBLE_MOVEMENTS = [VERTICAL, HORIZONTAL]  # Up/down, left/right
     POSSIBLE_DELTA_VALS = [-1, 0, 1]  # Left/down, stay, right/up
     MAX_MOVEMENT_UNITS = 1
+    LEFT, RIGHT, UP, DOWN, NONE = 0, 1, 2, 3, 4

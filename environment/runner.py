@@ -1,4 +1,5 @@
 from agents.agent import Agent
+from agents.uct import UCT
 from environment.pursuit import Pursuit
 import numpy as np
 from typing import List
@@ -18,6 +19,10 @@ class Runner(object):
             pursuit = Pursuit(height, width, predators)
 
             while not pursuit.prey_caught():
+                for predator in predators:
+                    if isinstance(predator, UCT):
+                        predator.update_teammate_models(pursuit.state)
+
                 pursuit.transition()
 
             rounds.append(pursuit.state.round_num)

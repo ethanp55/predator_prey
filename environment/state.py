@@ -38,6 +38,30 @@ class State:
 
         return grid_str[:-1]
 
+    def available_actions(self) -> Dict[str, List[Tuple[int, int]]]:
+        possible_actions_map = {}
+
+        for agent_name, curr_pos in self.agent_positions.items():
+            curr_row, curr_col = curr_pos
+
+            for movement in Utils.POSSIBLE_MOVEMENTS:
+                for delta in Utils.POSSIBLE_DELTA_VALS:
+                    if movement == Utils.VERTICAL:
+                        new_row, new_col = curr_row + delta, curr_col
+
+                    else:
+                        new_row, new_col = curr_row, curr_col + delta
+
+                    new_row, new_col = self.adjust_vals(new_row, new_col)
+                    possible_positions = possible_actions_map.get(agent_name, [])
+
+                    if (new_row, new_col) not in possible_positions:
+                        possible_positions.append((new_row, new_col))
+
+                    possible_actions_map[agent_name] = possible_positions
+
+        return possible_actions_map
+
     def adjust_vals(self, row_val: int, col_val: int) -> Tuple[int, int]:
         row, col = row_val, col_val
 
