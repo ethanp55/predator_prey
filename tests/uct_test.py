@@ -10,4 +10,4 @@ uct = UCT('UCT', 100, [agent.name for agent in [greedy1, greedy2, greedy3]])
 
 predators = [greedy1, greedy2, greedy3, uct]
 
-Runner.run(predators, n_epochs=100)
+Runner.run(predators, n_epochs=10)

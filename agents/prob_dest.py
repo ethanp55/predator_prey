@@ -4,7 +4,7 @@ from utils.utils import Utils
 
 
 class ProbabilisticDestinations(Agent):
-    def __init__(self, name: str, temperature: float = 1.0, max_dist: int = 3, max_iterations: int = 100) -> None:
+    def __init__(self, name: str, temperature: float = -1.0, max_dist: int = 3, max_iterations: int = 100) -> None:
         Agent.__init__(self, name)
         self.temperature, self.max_dist, self.max_iterations = temperature, max_dist, max_iterations
 
@@ -17,7 +17,13 @@ class ProbabilisticDestinations(Agent):
             return prey_row, prey_col
 
         # Otherwise, use the softmax function to pick a distance from the prey
-        distances = range(self.max_dist)
+        curr_dist = state.n_movements(curr_row, curr_col, prey_row, prey_col)
+        max_dist = max(curr_dist, self.max_dist)
+        distances = range(max_dist)
+
+        if len(distances) == 0:
+            return curr_row, curr_col
+
         denom = sum([np.exp(dist / self.temperature) for dist in distances])
         probs = [np.exp(dist / self.temperature) / denom for dist in distances]
 

@@ -91,6 +91,13 @@ class UCT(Agent):
                 model.fit(x_train, y_train)
 
     def act(self, state: State) -> Tuple[int, int]:
+        # If already neighboring the prey, try to move onto it
+        prey_row, prey_col = state.agent_positions[Utils.PREY_NAME]
+        curr_row, curr_col = state.agent_positions[self.name]
+
+        if state.neighbors(prey_row, prey_col, curr_row, curr_col):
+            return prey_row, prey_col
+
         # The 'root' is the current state and depth
         root = UCTNode(state)
         node_map = {f'{state}_0': root}
