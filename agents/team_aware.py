@@ -113,7 +113,7 @@ class TeamAware(Agent):
             distances.sort(key=lambda x: x[-1])
             neighbor_distances[agent_name] = distances
 
-            # Keep track of the the worst shortest distance
+            # Keep track of the worst shortest distance
             name_ordering.append((agent_name, distances[-1][-1]))
 
         # Order by the worst shortest distance

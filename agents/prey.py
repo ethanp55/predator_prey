@@ -1,11 +1,8 @@
-from agents.agent import Agent, State, Tuple
+from agents.random import Random
 from utils.utils import Utils
 
 
-class Prey(Agent):
+class Prey(Random):
     def __init__(self) -> None:
-        Agent.__init__(self, Utils.PREY_NAME)
-
-    def act(self, state: State) -> Tuple[int, int]:
-        return self.random_action(state)
+        Random.__init__(self, Utils.PREY_NAME)
 
