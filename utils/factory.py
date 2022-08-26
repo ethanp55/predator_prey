@@ -15,7 +15,7 @@ class Factory:
 
 
 class ExpertFactory(Factory):
-    def __init__(self, identifier: str) -> None:
+    def __init__(self, identifier: str = 'E') -> None:
         Factory.__init__(self, identifier)
 
     def generate_agents(self) -> List[Agent]:
@@ -42,15 +42,19 @@ class RandomExpertFactory(Factory):
         Factory.__init__(self, identifier)
 
     def generate_agents(self) -> List[Agent]:
-        expert_classes = [Greedy, GreedyProbabilistic, TeamAware]
         agents = []
 
         for i in range(3):
-            chosen_class = random.choice(expert_classes)
+            chosen_class = self.select_random_class()
             agents.append(chosen_class(f'Agent{i}_{self.identifier}'))
 
         return agents
 
+    @staticmethod
+    def select_random_class() -> type:
+        expert_classes = [Greedy, GreedyProbabilistic, TeamAware]
+
+        return random.choice(expert_classes)
 
 
 

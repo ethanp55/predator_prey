@@ -7,5 +7,6 @@ class Utils(object):
     MAX_MOVEMENT_UNITS = 1
     LEFT, RIGHT, UP, DOWN, NONE = 0, 1, 2, 3, 4
     ALEGAATR_NAME = 'AlegAATr'
+    KNN_N_NEIGHBORS = 15
     ESTIMATES_LOOKBACK = 5
     TRAINING_EPOCHS = 100

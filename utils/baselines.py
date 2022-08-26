@@ -8,15 +8,15 @@ class Baselines(object):
     @staticmethod
     def baseline(agent: Agent) -> float:
         # These numbers were obtained by running the agents in a team composed of themselves for 1000 epochs; they
-        # represent the average number of steps taken to surround the prey
+        # represent the average number of rounds taken to surround the prey
         if isinstance(agent, Greedy):
-            return 6.032542011202987
+            return 13.29
 
         elif isinstance(agent, GreedyProbabilistic):
-            return 27.922160243407706
+            return 58.189
 
         elif isinstance(agent, TeamAware):
-            return 2.9083265527529156
+            return 5.003
 
         else:
             raise Exception(f'Unsupported agent type: {type(agent)}')
