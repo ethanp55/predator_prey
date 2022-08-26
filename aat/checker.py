@@ -45,30 +45,23 @@ class AssumptionChecker:
         # Average across the 3 predators/teammates
         return np.array(vals).mean()
 
-    def _closer_checker(self, prev_state: State, curr_state: State) -> float:
-        # Calculate the previous collective distance from the prey (previous state)
-        prey_row, prey_col = prev_state.agent_positions[Utils.PREY_NAME]
-        collective_distance = 0
+    def _collective_distance(self, state: State) -> float:
+        collective_distance, (prey_row, prey_col) = 0, state.agent_positions[Utils.PREY_NAME]
 
-        for agent_name, (row, col) in prev_state.agent_positions.items():
+        for agent_name, (row, col) in state.agent_positions.items():
             if agent_name == Utils.PREY_NAME:
                 continue
 
-            dist_from_prey = prev_state.n_movements(row, col, prey_row, prey_col)
+            dist_from_prey = state.n_movements(row, col, prey_row, prey_col)
             collective_distance += dist_from_prey
 
-        # Calculate the current collective distance from the prey (current state)
-        prey_row, prey_col = prev_state.agent_positions[Utils.PREY_NAME]
-        curr_collective_distance = 0
+        return collective_distance
 
-        for agent_name, (row, col) in curr_state.agent_positions.items():
-            if agent_name == Utils.PREY_NAME:
-                continue
+    def _closer_checker(self, prev_state: State, curr_state: State) -> float:
+        prev_collective_distance = self._collective_distance(prev_state)
+        curr_collective_distance = self._collective_distance(curr_state)
 
-            dist_from_prey = curr_state.n_movements(row, col, prey_row, prey_col)
-            curr_collective_distance += dist_from_prey
-
-        return curr_collective_distance / collective_distance
+        return curr_collective_distance / prev_collective_distance
 
     def _max_dim_checker(self, prev_state: State, curr_state: State) -> float:
         vals, (prey_row, prey_col) = [], prev_state.agent_positions[Utils.PREY_NAME]
@@ -133,9 +126,10 @@ class AssumptionChecker:
     def estimate_assumptions(self, prev_state: State, curr_state: State) -> Assumptions:
         greedy_estimate = self._strategy_checker(prev_state, curr_state, Greedy('GreedySim'))
         planner_estimate = self._strategy_checker(prev_state, curr_state, TeamAware('TeamAwareSim'))
+        collective_distance = self._collective_distance(curr_state)
         moving_closer_estimate = self._closer_checker(prev_state, curr_state)
         max_dim_estimate = self._max_dim_checker(prev_state, curr_state)
         collisions_estimate = self._collisions_checker(prev_state, curr_state)
 
-        return Assumptions(greedy_estimate, planner_estimate, moving_closer_estimate, max_dim_estimate,
-                           collisions_estimate)
+        return Assumptions(greedy_estimate, planner_estimate, collective_distance, moving_closer_estimate,
+                           max_dim_estimate, collisions_estimate)

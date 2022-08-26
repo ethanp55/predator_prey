@@ -6,6 +6,7 @@ from typing import List
 class Assumptions:
     greedy: float
     planner: float
+    collective_distance: float
     moving_closer: float
     prefer_max_dim: float
     collisions: float
