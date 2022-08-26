@@ -6,3 +6,6 @@ class Utils(object):
     POSSIBLE_DELTA_VALS = [-1, 0, 1]  # Left/down, stay, right/up
     MAX_MOVEMENT_UNITS = 1
     LEFT, RIGHT, UP, DOWN, NONE = 0, 1, 2, 3, 4
+    ALEGAATR_NAME = 'AlegAATr'
+    ESTIMATES_LOOKBACK = 5
+    TRAINING_EPOCHS = 100

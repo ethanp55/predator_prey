@@ -1,21 +1,18 @@
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
 class Assumptions:
-    def __init__(self) -> None:
-        # AVERAGE THE ASSUMPTION VALUES ACROSS THE 3 TEAMMATES
-        # Greedy
-            # Simulate greedy agent n times and compare average results
-        # Planner
-            # Simulate team aware agent n times and compare average results
-        # Moving closer
-            # Calculate whether the agent move closer or farther away from prey (will hopefully get a feel for any
-            # randomness)
-        # Prefer max dim
-            # Calculate whether the agent moved along the max or min dimension (will hopefully get an idea for any
-            # probabilistic qualities and/or movement preferences)
+    greedy: float
+    planner: float
+    moving_closer: float
+    prefer_max_dim: float
+    collisions: float
 
+    def generate_tuple(self, round_num: int, baseline: float) -> List[float]:
+        tup = [round_num]
+        tup += [self.__getattribute__(field_name) for field_name in self.__annotations__.keys()]
+        tup += [baseline, baseline]
 
-
-        # Predicting: average number of team steps to surround predator
-        # For the bandit mechanism:
-            # For each expert, the "reward" to keep track of is percentage decrease in total team distance from round
-            # to round
-        pass
+        return tup
