@@ -23,9 +23,11 @@ expert_factory = ExpertFactory()
 
 # Iterate through the different training phases
 for phase in training_phases:
+    print(f'PHASE {phase}')
     experts_to_train = expert_factory.generate_agents()
 
     for expert in experts_to_train:
+        print(expert.name)
         expert_data, baseline = [], Baselines.baseline(expert)
 
         for height, width in dimensions:

@@ -16,10 +16,11 @@ class AssumptionChecker:
 
         for agent_name in prev_state.agent_positions.keys():
             # We only want to look at the other 3 predators
-            if agent_name == Utils.ALEGAATR_NAME or agent_name == Utils.PREY_NAME:
+            if agent_name == Utils.PREY_NAME:
                 continue
 
             matches = []
+            sim_agent.name = agent_name
 
             for _ in range(self.n_simulations):
                 new_row, new_col = sim_agent.act(prev_state)
@@ -38,9 +39,6 @@ class AssumptionChecker:
 
             # Use the average value from the simulations
             vals.append(np.array(matches).mean())
-
-        # Sanity check
-        assert len(vals) == 3
 
         # Average across the 3 predators/teammates
         return np.array(vals).mean()
@@ -67,7 +65,7 @@ class AssumptionChecker:
         vals, (prey_row, prey_col) = [], prev_state.agent_positions[Utils.PREY_NAME]
 
         for agent_name, (prev_row, prev_col) in prev_state.agent_positions.items():
-            if agent_name == Utils.ALEGAATR_NAME or agent_name == Utils.PREY_NAME:
+            if agent_name == Utils.PREY_NAME:
                 continue
 
             curr_row, curr_col = curr_state.agent_positions[agent_name]
@@ -100,9 +98,6 @@ class AssumptionChecker:
             # We couldn't find a neighboring position, so we're not sure what their strategy is
             else:
                 vals.append(0.5)
-
-        # Sanity check
-        assert len(vals) == 3
 
         # Average across the 3 predators/teammates
         return np.array(vals).mean()
