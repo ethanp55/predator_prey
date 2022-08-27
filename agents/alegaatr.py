@@ -94,7 +94,7 @@ class Alegaatr(Agent):
         self.n_rounds_since_played[best_key] = 0
         self.expert_to_use = self.experts[best_key]
 
-        print(f'AlgAATer expert: {best_key}')
+        print(f'{self.name} expert: {best_key}')
 
     def act(self, state: State) -> Tuple[int, int]:
         self.prev_distance = state.collective_distance()
