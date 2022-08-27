@@ -1,4 +1,6 @@
+from collections import deque
 from dataclasses import dataclass
+import pandas as pd
 from typing import List
 
 
@@ -11,12 +13,36 @@ class Assumptions:
     prefer_max_dim: float
     collisions: float
 
+    def get_assumption_names(self) -> List[str]:
+        return list(self.__annotations__.keys())
+
     def generate_tuple(self, round_num: int, baseline: float) -> List[float]:
         tup = [round_num]
-        tup += [self.__getattribute__(field_name) for field_name in self.__annotations__.keys()]
+        tup += [self.__getattribute__(assumption_name) for assumption_name in self.get_assumption_names()]
         tup += [baseline]
 
         return tup
+
+
+class AssumptionsCollection:
+    def __init__(self, lookback: int) -> None:
+        self.collections = {}
+        self.lookback = lookback
+
+    def update(self, new_assumptions: Assumptions) -> None:
+        for assumption_name in new_assumptions.get_assumption_names():
+            collection = self.collections.get(assumption_name, deque(maxlen=self.lookback))
+            collection.append(new_assumptions.__dict__[assumption_name])
+            self.collections[assumption_name] = collection
+
+    def generate_moving_averages(self) -> List[float]:
+        moving_averages = []
+
+        for collection in self.collections.values():
+            moving_average = list(pd.Series.ewm(collection, span=self.lookback).mean())[-1]
+            moving_averages.append(moving_average)
+
+        return moving_averages
 
 
 def distance_function(x: List[float], y: List[float]) -> float:

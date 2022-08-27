@@ -44,16 +44,7 @@ class AssumptionChecker:
         return np.array(vals).mean()
 
     def _collective_distance(self, state: State) -> float:
-        collective_distance, (prey_row, prey_col) = 0, state.agent_positions[Utils.PREY_NAME]
-
-        for agent_name, (row, col) in state.agent_positions.items():
-            if agent_name == Utils.PREY_NAME:
-                continue
-
-            dist_from_prey = state.n_movements(row, col, prey_row, prey_col)
-            collective_distance += dist_from_prey
-
-        return collective_distance
+        return state.collective_distance()
 
     def _closer_checker(self, prev_state: State, curr_state: State) -> float:
         prev_collective_distance = self._collective_distance(prev_state)

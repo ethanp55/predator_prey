@@ -174,3 +174,15 @@ class State:
                     return False
 
         return True
+
+    def collective_distance(self) -> float:
+        collective_distance, (prey_row, prey_col) = 0, self.agent_positions[Utils.PREY_NAME]
+
+        for agent_name, (row, col) in self.agent_positions.items():
+            if agent_name == Utils.PREY_NAME:
+                continue
+
+            dist_from_prey = self.n_movements(row, col, prey_row, prey_col)
+            collective_distance += dist_from_prey
+
+        return collective_distance
