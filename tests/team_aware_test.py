@@ -9,4 +9,4 @@ team_aware4 = TeamAware('TeamAware4')
 
 predators = [team_aware1, team_aware2, team_aware3, team_aware4]
 
-Runner.run(predators)
+Runner.run(predators, n_epochs=1000, height=5, width=5)

@@ -39,7 +39,7 @@ class AssumptionsCollection:
         moving_averages = []
 
         for collection in self.collections.values():
-            moving_average = list(pd.Series.ewm(collection, span=self.lookback).mean())[-1]
+            moving_average = list(pd.Series.ewm(pd.Series(collection), span=self.lookback).mean())[-1]
             moving_averages.append(moving_average)
 
         return moving_averages

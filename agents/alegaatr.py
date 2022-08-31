@@ -16,8 +16,9 @@ class Alegaatr(Agent):
         Agent.__init__(self, name)
         self.lmbda = lmbda
         self.assumptions_collection = AssumptionsCollection(Utils.ESTIMATES_LOOKBACK)
-        self.expert_to_use = None
+        self.expert_to_use, self.expert_to_use_name = None, None
         self.prev_distance = None
+        self.round_switch_number = 0
 
         factory = ExpertFactory()
         experts_list = factory.generate_agents()
@@ -59,47 +60,50 @@ class Alegaatr(Agent):
         self.assumptions_collection.update(new_assumptions)
         new_distance = state.collective_distance()
         percentage_decrease = 1 - (new_distance / self.prev_distance)
-        self.empirical_results[self.expert_to_use.name].append(percentage_decrease)
+        self.empirical_results[self.expert_to_use_name].append(percentage_decrease)
 
-        predictions, new_tup = {}, [round_num] + self.assumptions_collection.generate_moving_averages()
+        if round_num > self.round_switch_number:
+            predictions, new_tup = {}, [round_num] + self.assumptions_collection.generate_moving_averages()
 
-        for expert_name, expert in self.experts.items():
-            corrections, distances = self._knn_prediction(new_tup, expert_name)
+            for expert_name, expert in self.experts.items():
+                corrections, distances = self._knn_prediction(new_tup, expert_name)
 
-            total_pred, inverse_distance_sum = 0, 0
+                total_pred, inverse_distance_sum = 0, 0
 
-            for dist in distances:
-                inverse_distance_sum += (1 / dist) if dist != 0 else (1 / 0.000001)
+                for dist in distances:
+                    inverse_distance_sum += (1 / dist) if dist != 0 else (1 / 0.000001)
 
-            for i in range(len(corrections)):
-                distance_i = distances[i]
-                cor = corrections[i]
-                inverse_distance_i = (1 / distance_i) if distance_i != 0 else (1 / 0.000001)
-                distance_weight = inverse_distance_i / inverse_distance_sum
-                total_pred += (Baselines.baseline(expert) * cor * distance_weight)
+                for i in range(len(corrections)):
+                    distance_i = distances[i]
+                    cor = corrections[i]
+                    inverse_distance_i = (1 / distance_i) if distance_i != 0 else (1 / 0.000001)
+                    distance_weight = inverse_distance_i / inverse_distance_sum
+                    total_pred += (Baselines.baseline(expert) * cor * distance_weight)
 
-            if len(self.empirical_results[expert_name]) > 0:
-                self.n_rounds_since_played[expert_name] += 1 if expert_name != self.expert_to_use.name else 0
-                prob = self.lmbda ** self.n_rounds_since_played[expert_name]
-                use_empricial_avgs = np.random.choice([1, 0], p=[prob, 1 - prob])
+                if len(self.empirical_results[expert_name]) > 0:
+                    self.n_rounds_since_played[expert_name] += 1 if expert_name != self.expert_to_use_name else 0
+                    prob = self.lmbda ** self.n_rounds_since_played[expert_name]
+                    use_empricial_avgs = np.random.choice([1, 0], p=[prob, 1 - prob])
 
-            else:
-                use_empricial_avgs = False
+                else:
+                    use_empricial_avgs = False
 
-            predictions[expert_name] = total_pred if not use_empricial_avgs else \
-                np.array(self.empirical_results[expert_name]).mean()
+                predictions[expert_name] = total_pred if not use_empricial_avgs else \
+                    np.array(self.empirical_results[expert_name]).mean()
 
-        expert_key = max(predictions, key=lambda key: predictions[key])
-        best_key = expert_key
-        self.n_rounds_since_played[best_key] = 0
-        self.expert_to_use = self.experts[best_key]
+            expert_key = max(predictions, key=lambda key: predictions[key])
+            best_key = expert_key
+            self.n_rounds_since_played[best_key] = 0
+            self.expert_to_use, self.expert_to_use_name = self.experts[best_key], best_key
+            self.round_switch_number = round_num + 1
 
-        print(f'{self.name} expert: {best_key}')
+        # print(f'{self.name} expert: {best_key}')
 
     def act(self, state: State) -> Tuple[int, int]:
         self.prev_distance = state.collective_distance()
 
         if self.expert_to_use is None:
-            self.expert_to_use = random.choice(list(self.experts.values()))
+            self.expert_to_use_name, self.expert_to_use = \
+                random.choice(list(zip(list(self.experts.keys()), list(self.experts.values()))))
 
         return self.expert_to_use.act(state)

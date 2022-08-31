@@ -2,6 +2,7 @@ from agents.agent import Agent
 from agents.greedy import Greedy
 from agents.greedy_prob import GreedyProbabilistic
 from agents.team_aware import TeamAware
+from copy import deepcopy
 import random
 from typing import List
 
@@ -55,6 +56,21 @@ class RandomExpertFactory(Factory):
         expert_classes = [Greedy, GreedyProbabilistic, TeamAware]
 
         return random.choice(expert_classes)
+
+
+class RandomSelectionFactory(Factory):
+    def __init__(self, identifier: str, agent_pool: List[type]) -> None:
+        Factory.__init__(self, identifier)
+        self.agent_pool = agent_pool
+
+    def generate_agents(self) -> List[Agent]:
+        agents = []
+
+        for i in range(3):
+            chosen_agent = deepcopy(random.choice(self.agent_pool))(name=f'Agent{i}_{self.identifier}')
+            agents.append(chosen_agent)
+
+        return agents
 
 
 

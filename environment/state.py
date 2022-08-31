@@ -84,7 +84,8 @@ class State:
 
         return self.grid[row][col] == Utils.AVAILABLE
 
-    def neighboring_positions(self, curr_row: int, curr_col: int) -> List[Tuple[int, int]]:
+    def neighboring_positions(self, curr_row: int, curr_col: int,
+                              filter_availability: bool = True) -> List[Tuple[int, int]]:
         positions = []
 
         for movement in Utils.POSSIBLE_MOVEMENTS:
@@ -95,7 +96,7 @@ class State:
                 else:
                     new_row, new_col = curr_row, curr_col + delta
 
-                if self.is_available(new_row, new_col):
+                if not filter_availability or self.is_available(new_row, new_col):
                     row, col = self.adjust_vals(new_row, new_col)
                     positions.append((row, col))
 
