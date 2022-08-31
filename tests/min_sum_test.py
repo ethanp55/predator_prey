@@ -9,4 +9,4 @@ min_sum4 = MinSum('MinSum4')
 
 predators = [min_sum1, min_sum2, min_sum3, min_sum4]
 
-Runner.run(predators, n_epochs=100, height=10, width=10)
+Runner.run(predators, n_epochs=1000)
