@@ -1,6 +1,6 @@
 from agents.agent import Agent
 from agents.greedy import Greedy
-from agents.greedy_prob import GreedyProbabilistic
+from agents.greedy_planner import GreedyPlanner
 from agents.team_aware import TeamAware
 
 
@@ -12,8 +12,8 @@ class Baselines(object):
         if isinstance(agent, Greedy):
             return 13.29
 
-        elif isinstance(agent, GreedyProbabilistic):
-            return 58.189
+        elif isinstance(agent, GreedyPlanner):
+            return 5.843
 
         elif isinstance(agent, TeamAware):
             return 5.003

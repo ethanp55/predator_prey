@@ -1,8 +1,10 @@
 from agents.alegaatr import Alegaatr
 from agents.greedy import Greedy
+from agents.greedy_planner import GreedyPlanner
 from agents.greedy_prob import GreedyProbabilistic
 from agents.prob_dest import ProbabilisticDestinations
 from agents.min_sum import MinSum
+from agents.modeller import Modeller
 from agents.team_aware import TeamAware
 from environment.runner import Runner
 import matplotlib.pyplot as plt
@@ -13,26 +15,30 @@ from utils.factory import SpecificExpertFactory, RandomSelectionFactory
 
 alegaatr = Alegaatr()
 greedy = Greedy('Greedy')
+greedy_planner = GreedyPlanner('GreedyPlanner')
 team_aware = TeamAware('TeamAware')
 min_sum = MinSum('MinSum')
+modeller = Modeller('Modeller')
 greedy_prob = GreedyProbabilistic('GreedyProb')
 prob_dest = ProbabilisticDestinations('ProbDest')
 
-test_agents = [alegaatr, greedy, team_aware, min_sum, greedy_prob, prob_dest]
+test_agents = [alegaatr, greedy, greedy_planner, team_aware, min_sum, modeller, greedy_prob, prob_dest]
 agent_names = [agent.name for agent in test_agents]
-dimensions = [(5, 5), (10, 10), (15, 15)]
+dimensions = [(5, 5), (10, 10)]
 
-N_EPOCHS = 50
+N_EPOCHS = 30
 
 # Deterministic
 print('DETERMINISTIC')
 for height, width in dimensions:
     print((height, width))
     greedy_factory = SpecificExpertFactory('S', Greedy)
+    greedy_planner_factory = SpecificExpertFactory('S', GreedyPlanner)
     team_aware_factory = SpecificExpertFactory('S', TeamAware)
     min_sum_factory = SpecificExpertFactory('S', MinSum)
 
-    factories = [('greedy', greedy_factory), ('team_aware', team_aware_factory), ('min_sum', min_sum_factory)]
+    factories = [('greedy', greedy_factory), ('greedy_planner', greedy_planner_factory),
+                 ('team_aware', team_aware_factory), ('min_sum', min_sum_factory)]
 
     for label, factory in factories:
         print(label)
@@ -58,7 +64,7 @@ for height, width in dimensions:
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
                 color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
-        plt.xticks(x_pos, agent_names, fontsize=10)
+        plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')
         plt.title(f'Team Composed of {label} Agents, {width} x {height} Grid')
@@ -70,9 +76,10 @@ print('NON-DETERMINISTIC')
 for height, width in dimensions:
     print((height, width))
     greedy_prob_factory = SpecificExpertFactory('S', GreedyProbabilistic)
+    modeller_factory = SpecificExpertFactory('S', Modeller)
     prob_dest_factory = SpecificExpertFactory('S', ProbabilisticDestinations)
 
-    factories = [('greedy_prob', greedy_prob_factory), ('prob_dest', prob_dest_factory)]
+    factories = [('greedy_prob', greedy_prob_factory), ('modeller', modeller_factory), ('prob_dest', prob_dest_factory)]
 
     for label, factory in factories:
         print(label)
@@ -98,7 +105,7 @@ for height, width in dimensions:
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
                 color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
-        plt.xticks(x_pos, agent_names, fontsize=10)
+        plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')
         plt.title(f'Team Composed of {label} Agents, {width} x {height} Grid')
@@ -133,7 +140,7 @@ for height, width in dimensions:
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
                 color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
-        plt.xticks(x_pos, agent_names, fontsize=10)
+        plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')
         plt.title(f'Team Composed of Mixed Agents, {width} x {height} Grid')

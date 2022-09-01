@@ -112,7 +112,7 @@ class AssumptionChecker:
     def estimate_assumptions(self, prev_state: State, curr_state: State) -> Assumptions:
         greedy_estimate = self._strategy_checker(prev_state, curr_state, Greedy('GreedySim'))
         planner_estimate = self._strategy_checker(prev_state, curr_state, TeamAware('TeamAwareSim'))
-        collective_distance = self._collective_distance(curr_state)
+        collective_distance = self._collective_distance(curr_state) / (curr_state.height * curr_state.width)
         moving_closer_estimate = self._closer_checker(prev_state, curr_state)
         max_dim_estimate = self._max_dim_checker(prev_state, curr_state)
         collisions_estimate = self._collisions_checker(prev_state, curr_state)

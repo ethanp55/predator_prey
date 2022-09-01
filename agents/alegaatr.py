@@ -63,7 +63,7 @@ class Alegaatr(Agent):
         self.empirical_results[self.expert_to_use_name].append(percentage_decrease)
 
         if round_num > self.round_switch_number:
-            predictions, new_tup = {}, [round_num] + self.assumptions_collection.generate_moving_averages()
+            predictions, new_tup = {}, self.assumptions_collection.generate_moving_averages()
 
             for expert_name, expert in self.experts.items():
                 corrections, distances = self._knn_prediction(new_tup, expert_name)

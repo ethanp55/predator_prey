@@ -2,8 +2,10 @@ library(DescTools)
 
 # Deterministic
 # 5 x 5
-df_det_5_5 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_prob_5_5.csv'), 
-                        read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_prob_dest_5_5.csv'))
+df_det_5_5 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_5_5.csv'), 
+                    read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_planner_5_5.csv'),
+                    read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_min_sum_5_5.csv'),
+                    read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_team_aware_5_5.csv'))
 
 model <- lm(df_det_5_5$Rewards ~ df_det_5_5$Agent)
 ANOVA <- aov(model)
@@ -11,8 +13,10 @@ tukey <- TukeyHSD(x=ANOVA, "df_det_5_5$Agent", conf.level=0.95)
 print(tukey)
 
 # 10 x 10
-df_det_10_10 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_prob_10_10.csv'), 
-                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_prob_dest_10_10.csv'))
+df_det_10_10 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_10_10.csv'), 
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_planner_10_10.csv'), 
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_min_sum_10_10.csv'), 
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_team_aware_10_10.csv'))
 
 model <- lm(df_det_10_10$Rewards ~ df_det_10_10$Agent)
 ANOVA <- aov(model)
@@ -20,8 +24,10 @@ tukey <- TukeyHSD(x=ANOVA, "df_det_10_10$Agent", conf.level=0.95)
 print(tukey)
 
 # 15 x 15
-df_det_15_15 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_prob_15_15.csv'), 
-                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_prob_dest_15_15.csv'))
+df_det_15_15 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_15_15.csv'), 
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_planner_15_51.csv'),
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_min_sum_15_15.csv'),
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_team_aware_15_15.csv'))
 
 model <- lm(df_det_15_15$Rewards ~ df_det_15_15$Agent)
 ANOVA <- aov(model)
@@ -46,7 +52,8 @@ print(tukey)
 # Non-deterministic
 # 5 x 5
 df_non_det_5_5 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_greedy_prob_5_5.csv'), 
-                        read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_5_5.csv'))
+                        read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_5_5.csv'), 
+                        read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_modeller_5_5.csv'))
 
 model <- lm(df_non_det_5_5$Rewards ~ df_non_det_5_5$Agent)
 ANOVA <- aov(model)
@@ -55,7 +62,8 @@ print(tukey)
 
 # 10 x 10
 df_non_det_10_10 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_greedy_prob_10_10.csv'), 
-                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_10_10.csv'))
+                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_10_10.csv'), 
+                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_modeller_10_10.csv'))
 
 model <- lm(df_non_det_10_10$Rewards ~ df_non_det_10_10$Agent)
 ANOVA <- aov(model)
@@ -64,7 +72,8 @@ print(tukey)
 
 # 15 x 15
 df_non_det_15_15 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_greedy_prob_15_15.csv'), 
-                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_15_15.csv'))
+                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_prob_dest_15_15.csv'), 
+                          read.csv('/Users/mymac/alegaater_pred_prey/tests/results/nondeterministic_modeller_15_15.csv'))
 
 model <- lm(df_non_det_15_15$Rewards ~ df_non_det_15_15$Agent)
 ANOVA <- aov(model)

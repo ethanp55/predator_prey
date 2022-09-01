@@ -1,5 +1,6 @@
 from agents.agent import Agent
 from agents.greedy import Greedy
+from agents.greedy_planner import GreedyPlanner
 from agents.greedy_prob import GreedyProbabilistic
 from agents.team_aware import TeamAware
 from copy import deepcopy
@@ -20,11 +21,11 @@ class ExpertFactory(Factory):
         Factory.__init__(self, identifier)
 
     def generate_agents(self) -> List[Agent]:
-        greedy = Greedy(f'Greedy_{self.identifier}')
-        greedy_prob = GreedyProbabilistic(f'GreedyProb_{self.identifier}')
+        # greedy = Greedy(f'Greedy_{self.identifier}')
+        greedy_planner = GreedyPlanner(f'GreedyPlanner_{self.identifier}')
         team_aware = TeamAware(f'TeamAware_{self.identifier}')
 
-        return [greedy, greedy_prob, team_aware]
+        return [greedy_planner, team_aware]
 
 
 class SpecificExpertFactory(Factory):

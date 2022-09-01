@@ -8,7 +8,7 @@ prob_dest4 = ProbabilisticDestinations('ProbDest4')
 
 predators = [prob_dest1, prob_dest2, prob_dest3, prob_dest4]
 
-Runner.run(predators)
+Runner.run(predators, n_epochs=1000)
 
 
 

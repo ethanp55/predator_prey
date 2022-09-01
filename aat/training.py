@@ -50,7 +50,7 @@ for phase in training_phases:
                 assumptions = nested_assumptions[0]
 
                 n_rounds = len(assumptions)
-                tups = [assumption.generate_tuple(i + 1, baseline) for i, assumption in enumerate(assumptions)]
+                tups = [assumption.generate_tuple(baseline) for i, assumption in enumerate(assumptions)]
 
                 # Adjust the correction term in the tuples
                 for tup in tups:
