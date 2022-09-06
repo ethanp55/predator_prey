@@ -1,6 +1,7 @@
 from agents.agent import Agent
 from agents.greedy import Greedy
 from agents.greedy_planner import GreedyPlanner
+from agents.modeller import Modeller
 from agents.team_aware import TeamAware
 
 
@@ -17,6 +18,9 @@ class Baselines(object):
 
         elif isinstance(agent, TeamAware):
             return 5.003
+
+        elif isinstance(agent, Modeller):
+            return 5.849
 
         else:
             raise Exception(f'Unsupported agent type: {type(agent)}')

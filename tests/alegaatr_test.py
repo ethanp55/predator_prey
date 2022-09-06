@@ -24,9 +24,9 @@ prob_dest = ProbabilisticDestinations('ProbDest')
 
 test_agents = [alegaatr, greedy, greedy_planner, team_aware, min_sum, modeller, greedy_prob, prob_dest]
 agent_names = [agent.name for agent in test_agents]
-dimensions = [(5, 5), (10, 10)]
+dimensions = [(5, 5), (10, 10), (15, 15)]
 
-N_EPOCHS = 30
+N_EPOCHS = 50
 
 # Deterministic
 print('DETERMINISTIC')

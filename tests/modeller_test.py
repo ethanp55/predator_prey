@@ -9,4 +9,4 @@ modeller4 = Modeller('Modeller4')
 
 predators = [modeller1, modeller2, modeller3, modeller4]
 
-Runner.run(predators, n_epochs=100, height=5, width=5)
+Runner.run(predators, n_epochs=1000)
