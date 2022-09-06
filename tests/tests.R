@@ -25,7 +25,7 @@ print(tukey)
 
 # 15 x 15
 df_det_15_15 <- rbind(read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_15_15.csv'), 
-                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_planner_15_51.csv'),
+                      read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_greedy_planner_15_15.csv'),
                       read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_min_sum_15_15.csv'),
                       read.csv('/Users/mymac/alegaater_pred_prey/tests/results/deterministic_team_aware_15_15.csv'))
 
