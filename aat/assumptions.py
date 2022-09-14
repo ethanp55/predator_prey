@@ -12,15 +12,20 @@ class Assumptions:
     moving_closer: float
     prefer_max_dim: float
     collisions: float
+    agent_distance: float
+    distance: float
+    steps_tag: float = 0
 
     def get_assumption_names(self) -> List[str]:
         return list(self.__annotations__.keys())
 
-    def generate_tuple(self, baseline: float) -> List[float]:
+    def generate_tuple(self) -> List[float]:
         tup = [self.__getattribute__(assumption_name) for assumption_name in self.get_assumption_names()]
-        tup += [baseline]
 
         return tup
+
+    def increment_steps(self) -> None:
+        self.steps_tag += 1
 
 
 class AssumptionsCollection:
@@ -55,6 +60,7 @@ def distance_function(x: List[float], y: List[float]) -> float:
     moving_closer_dist = 4 * abs(x[3] - y[3])
     prefer_max_dim_dist = 4 * abs(x[4] - y[4])
     collisions_dist = 4 * abs(x[5] - y[5])
+    agent_distance_dist = 4 * abs(x[6] - y[6])
 
     return sum([greedy_dist, planner_dist, collective_distance_dist, moving_closer_dist,
-                prefer_max_dim_dist, collisions_dist])
+                prefer_max_dim_dist, collisions_dist, agent_distance_dist])

@@ -23,7 +23,7 @@ class Alegaatr(Agent):
         factory = ExpertFactory()
         experts_list = factory.generate_agents()
         self.experts, self.models, self.scalers, self.training_datas, self.empirical_results, \
-            self.n_rounds_since_played = {}, {}, {}, {}, {}, {}
+            self.n_rounds_since_played, self.expert_counts = {}, {}, {}, {}, {}, {}, {}
 
         data_dir = f'../aat/training_data'
 
@@ -38,12 +38,13 @@ class Alegaatr(Agent):
                 np.array(pickle.load(open(f'{data_dir}/{expert_name}_training_data.pickle', 'rb')))
             self.empirical_results[expert_name] = deque(maxlen=Utils.ESTIMATES_LOOKBACK)
             self.n_rounds_since_played[expert_name] = 0
+            self.expert_counts[expert_name] = 0
 
     def _knn_prediction(self, x: List[float], expert_name: str) -> Tuple[List[float], List[float]]:
         model, scaler, training_data = \
             self.models[expert_name], self.scalers[expert_name], self.training_datas[expert_name]
 
-        x = np.array(x).reshape(1, -1)
+        x = np.array(x[:-2]).reshape(1, -1)
         x_scaled = scaler.transform(x)
         neighbor_distances, neighbor_indices = model.kneighbors(x_scaled, Utils.KNN_N_NEIGHBORS)
         corrections, distances = [], []
@@ -51,18 +52,20 @@ class Alegaatr(Agent):
         for i in range(len(neighbor_indices[0])):
             neighbor_idx = neighbor_indices[0][i]
             neighbor_dist = neighbor_distances[0][i]
-            corrections.append(training_data[neighbor_idx, -1])
+            corrections.append(training_data[neighbor_idx, -2])
             distances.append(neighbor_dist)
 
         return corrections, distances
 
     def update_expert(self, round_num: int, new_assumptions: Assumptions, state: State) -> None:
         self.assumptions_collection.update(new_assumptions)
-        new_distance = state.collective_distance()
-        percentage_decrease = 1 - (new_distance / self.prev_distance)
-        self.empirical_results[self.expert_to_use_name].append(percentage_decrease)
+        new_distance = state.agent_distance(self.name)
+        n_steps_closer = max(self.prev_distance - new_distance, 0)
+        self.empirical_results[self.expert_to_use_name].append(n_steps_closer)
+        row, col = state.agent_positions[self.name]
+        prey_row, prey_col = state.agent_positions[Utils.PREY_NAME]
 
-        if round_num > self.round_switch_number:
+        if round_num > self.round_switch_number and not state.neighbors(row, col, prey_row, prey_col):
             predictions, new_tup = {}, self.assumptions_collection.generate_moving_averages()
 
             for expert_name, expert in self.experts.items():
@@ -78,7 +81,7 @@ class Alegaatr(Agent):
                     cor = corrections[i]
                     inverse_distance_i = (1 / distance_i) if distance_i != 0 else (1 / 0.000001)
                     distance_weight = inverse_distance_i / inverse_distance_sum
-                    total_pred += (Baselines.baseline(expert) * cor * distance_weight)
+                    total_pred += (new_distance * cor * distance_weight)
 
                 if len(self.empirical_results[expert_name]) > 0:
                     self.n_rounds_since_played[expert_name] += 1 if expert_name != self.expert_to_use_name else 0
@@ -88,19 +91,30 @@ class Alegaatr(Agent):
                 else:
                     use_empricial_avgs = False
 
-                predictions[expert_name] = total_pred if not use_empricial_avgs else \
-                    np.array(self.empirical_results[expert_name]).mean()
+                if use_empricial_avgs:
+                    avg_steps = np.array(self.empirical_results[expert_name]).mean()
+                    # avg_steps = 0.001 if avg_steps == 0 else avg_steps
+                    predictions[expert_name] = (total_pred / avg_steps) if avg_steps >= 1 else total_pred
+                    # print(f'{expert_name}, {self.empirical_results[expert_name]}, {avg_steps}, {predictions[expert_name]}')
 
-            expert_key = max(predictions, key=lambda key: predictions[key])
+                else:
+                    predictions[expert_name] = total_pred
+
+            expert_key = min(predictions, key=lambda key: predictions[key])
             best_key = expert_key
             self.n_rounds_since_played[best_key] = 0
             self.expert_to_use, self.expert_to_use_name = self.experts[best_key], best_key
             self.round_switch_number = round_num + 1
 
-        # print(f'{self.name} expert: {best_key}')
+            # print(f'{self.name} expert: {best_key}')
+            # print(predictions)
+            # print()
 
     def act(self, state: State) -> Tuple[int, int]:
-        self.prev_distance = state.collective_distance()
+        if self.expert_to_use_name is not None:
+            self.expert_counts[self.expert_to_use_name] += 1
+
+        self.prev_distance = state.agent_distance(self.name)
 
         if self.expert_to_use is None:
             self.expert_to_use_name, self.expert_to_use = \

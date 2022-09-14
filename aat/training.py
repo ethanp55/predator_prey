@@ -20,6 +20,8 @@ training_data = {}
 training_phases = [1, 2, 3]
 dimensions = [(5, 5), (10, 10)]
 expert_factory = ExpertFactory()
+n_epochs = Utils.TRAINING_EPOCHS
+fourths = n_epochs // 4
 
 # Iterate through the different training phases
 for phase in training_phases:
@@ -31,7 +33,12 @@ for phase in training_phases:
         expert_data, baseline = [], Baselines.baseline(expert)
 
         for height, width in dimensions:
-            for epoch in range(Utils.TRAINING_EPOCHS):
+            print((height, width))
+
+            for epoch in range(n_epochs):
+                if fourths > 0 and (epoch + 1) % fourths == 0:
+                    print(f'Epoch {epoch + 1} / {n_epochs}')
+
                 if phase == 1:
                     factory = SpecificExpertFactory('S', type(expert))
 
@@ -45,16 +52,16 @@ for phase in training_phases:
                 predators = [expert] + factory.generate_agents()
 
                 nested_assumptions = Runner.run(predators, n_epochs=1, height=height, width=width,
-                                                report_assumptions=True)
+                                                         report_assumptions=True)
                 assert len(nested_assumptions) == 1  # Sanity check
                 assumptions = nested_assumptions[0]
 
-                n_rounds = len(assumptions)
-                tups = [assumption.generate_tuple(baseline) for i, assumption in enumerate(assumptions)]
+                tups = [assumption.generate_tuple() for i, assumption in enumerate(assumptions)]
 
                 # Adjust the correction term in the tuples
                 for tup in tups:
-                    tup[-1] = n_rounds / tup[-1]
+                    steps_to_prey = tup[-1]
+                    tup[-2] = (steps_to_prey / tup[-2]) if tup[-2] != 0 else 0
 
                 expert_data.extend(tups)
 
@@ -71,8 +78,13 @@ for expert in expert_factory.generate_agents():
 
     with open(f'{data_dir}/{expert_name}_training_data.pickle', 'rb') as f:
         training_data = np.array(pickle.load(f))
+        # import sys
+        # np.set_printoptions(threshold=sys.maxsize)
+        # print(training_data)
+        # print(training_data[:, -1].mean())
+        # print(training_data[:, -2].mean())
 
-    x = training_data[:, 0:-1]
+    x = training_data[:, 0:-2]
 
     print('X train shape: ' + str(x.shape))
 

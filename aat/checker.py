@@ -8,7 +8,8 @@ from utils.utils import Utils
 
 
 class AssumptionChecker:
-    def __init__(self, n_simulations: int = 30):
+    def __init__(self, agent_name: str, n_simulations: int = 30):
+        self.agent_name = agent_name
         self.n_simulations = n_simulations
 
     def _strategy_checker(self, prev_state: State, curr_state: State, sim_agent: Agent) -> float:
@@ -116,6 +117,8 @@ class AssumptionChecker:
         moving_closer_estimate = self._closer_checker(prev_state, curr_state)
         max_dim_estimate = self._max_dim_checker(prev_state, curr_state)
         collisions_estimate = self._collisions_checker(prev_state, curr_state)
+        dist = curr_state.agent_distance(self.agent_name)
+        agent_distance = dist / (curr_state.height * curr_state.width)
 
         return Assumptions(greedy_estimate, planner_estimate, collective_distance, moving_closer_estimate,
-                           max_dim_estimate, collisions_estimate)
+                           max_dim_estimate, collisions_estimate, agent_distance, dist)

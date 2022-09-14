@@ -26,7 +26,7 @@ test_agents = [alegaatr, greedy, greedy_planner, team_aware, min_sum, modeller, 
 agent_names = [agent.name for agent in test_agents]
 dimensions = [(5, 5), (10, 10), (15, 15)]
 
-N_EPOCHS = 50
+N_EPOCHS = 30
 
 # Deterministic
 print('DETERMINISTIC')
@@ -43,18 +43,26 @@ for height, width in dimensions:
     for label, factory in factories:
         print(label)
         results, names = [], []
+        alegaatr_counts = {}
 
         for _ in range(N_EPOCHS):
             for agent in test_agents:
                 team = factory.generate_agents()
                 predators = [agent] + team
 
-                _, num_rounds = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
+                _, num_rounds, counts = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
                 results.append(num_rounds)
                 names.append(agent.name)
 
+                if isinstance(agent, Alegaatr):
+                    for name, count in counts.items():
+                        alegaatr_counts[name] = alegaatr_counts.get(name, 0) + count
+
         df = pd.DataFrame({'Rewards': results, 'Agent': names})
         df.to_csv(f'./results/deterministic_{label}_{height}_{width}.csv')
+
+        alegaatr_counts_df = pd.DataFrame({'Counts': alegaatr_counts.values(), 'Expert': alegaatr_counts.keys()})
+        alegaatr_counts_df.to_csv(f'./results/deterministic_alegaatr_counts_{label}_{height}_{width}.csv')
 
         mean_results = []
 
@@ -63,7 +71,7 @@ for height, width in dimensions:
 
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
-                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
+                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan', 'black'])
         plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')
@@ -84,18 +92,26 @@ for height, width in dimensions:
     for label, factory in factories:
         print(label)
         results, names = [], []
+        alegaatr_counts = {}
 
         for _ in range(N_EPOCHS):
             for agent in test_agents:
                 team = factory.generate_agents()
                 predators = [agent] + team
 
-                _, num_rounds = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
+                _, num_rounds, counts = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
                 results.append(num_rounds)
                 names.append(agent.name)
 
+                if isinstance(agent, Alegaatr):
+                    for name, count in counts.items():
+                        alegaatr_counts[name] = alegaatr_counts.get(name, 0) + count
+
         df = pd.DataFrame({'Rewards': results, 'Agent': names})
         df.to_csv(f'./results/nondeterministic_{label}_{height}_{width}.csv')
+
+        alegaatr_counts_df = pd.DataFrame({'Counts': alegaatr_counts.values(), 'Expert': alegaatr_counts.keys()})
+        alegaatr_counts_df.to_csv(f'./results/nondeterministic_alegaatr_counts_{label}_{height}_{width}.csv')
 
         mean_results = []
 
@@ -104,7 +120,7 @@ for height, width in dimensions:
 
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
-                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
+                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan', 'black'])
         plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')
@@ -119,18 +135,26 @@ for height, width in dimensions:
     agent_types = [type(agent) for agent in test_agents]
     random_selection_factory = RandomSelectionFactory('RS', agent_types)
     results, names = [], []
+    alegaatr_counts = {}
 
     for _ in range(N_EPOCHS):
         for agent in test_agents:
             team = random_selection_factory.generate_agents()
             predators = [agent] + team
 
-            _, num_rounds = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
+            _, num_rounds, counts = Runner.run(predators, suppress_output=True, n_epochs=1, height=height, width=width)
             results.append(num_rounds)
             names.append(agent.name)
 
+            if isinstance(agent, Alegaatr):
+                for name, count in counts.items():
+                    alegaatr_counts[name] = alegaatr_counts.get(name, 0) + count
+
         df = pd.DataFrame({'Rewards': results, 'Agent': names})
         df.to_csv(f'./results/mixed_{height}_{width}.csv')
+
+        alegaatr_counts_df = pd.DataFrame({'Counts': alegaatr_counts.values(), 'Expert': alegaatr_counts.keys()})
+        alegaatr_counts_df.to_csv(f'./results/mixed_alegaatr_counts_{height}_{width}.csv')
 
         mean_results = []
 
@@ -139,7 +163,7 @@ for height, width in dimensions:
 
         x_pos = np.arange(len(agent_names))
         plt.bar(x_pos, mean_results, align='center', alpha=0.5,
-                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan'])
+                color=['green', 'red', 'blue', 'orange', 'purple', 'yellow', 'cyan', 'black'])
         plt.xticks(x_pos, agent_names, fontsize=6)
         plt.xlabel('Algorithm')
         plt.ylabel('# Rounds to Surround Prey')

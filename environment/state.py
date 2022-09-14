@@ -127,6 +127,8 @@ class State:
         return n_movements <= Utils.MAX_MOVEMENT_UNITS
 
     def process_actions(self, action_map: Dict[str, Tuple[int, int]]) -> None:
+        prey_row, prey_col = self.agent_positions[Utils.PREY_NAME]
+
         for agent_name, tup in action_map.items():
             new_row, new_col = tup
             curr_row, curr_col = self.agent_positions[agent_name]
@@ -144,12 +146,12 @@ class State:
                 raise Exception(f'Cannot move from {(curr_row, curr_col)} to {(new_row, new_col)} because there are '
                                 f'{n_movements} > {Utils.MAX_MOVEMENT_UNITS} movements')
 
+            # Update the number of steps the agent has taken if it is not neighboring the prey
+            if (new_row, new_col) not in self.neighboring_positions(prey_row, prey_col, filter_availability=False):
+                self.agent_n_steps[agent_name] = self.agent_n_steps.get(agent_name, 0) + 1
+
             # Only move the agent if its desired new position is available
             if self.is_available(new_row, new_col):
-                # Update the number of steps the agent has taken if its new position is different
-                if (curr_row, curr_col) != (new_row, new_col):
-                    self.agent_n_steps[agent_name] = self.agent_n_steps.get(agent_name, 0) + 1
-
                 # The old position should now be available since the agent is moving
                 self.grid[curr_row][curr_col] = Utils.AVAILABLE
 
@@ -187,3 +189,9 @@ class State:
             collective_distance += dist_from_prey
 
         return collective_distance
+
+    def agent_distance(self, name: str) -> float:
+        prey_row, prey_col = self.agent_positions[Utils.PREY_NAME]
+        row, col = self.agent_positions[name]
+
+        return self.n_movements(row, col, prey_row, prey_col)

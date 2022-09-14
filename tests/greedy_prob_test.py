@@ -9,4 +9,4 @@ greedy_prob4 = GreedyProbabilistic('GreedyProb4')
 
 predators = [greedy_prob1, greedy_prob2, greedy_prob3, greedy_prob4]
 
-Runner.run(predators)
+Runner.run(predators, n_epochs=1000)
