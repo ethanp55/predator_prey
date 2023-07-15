@@ -93,9 +93,7 @@ class Alegaatr(Agent):
 
                 if use_empricial_avgs:
                     avg_steps = np.array(self.empirical_results[expert_name]).mean()
-                    # avg_steps = 0.001 if avg_steps == 0 else avg_steps
                     predictions[expert_name] = (total_pred / avg_steps) if avg_steps >= 1 else total_pred
-                    # print(f'{expert_name}, {self.empirical_results[expert_name]}, {avg_steps}, {predictions[expert_name]}')
 
                 else:
                     predictions[expert_name] = total_pred
@@ -105,10 +103,6 @@ class Alegaatr(Agent):
             self.n_rounds_since_played[best_key] = 0
             self.expert_to_use, self.expert_to_use_name = self.experts[best_key], best_key
             self.round_switch_number = round_num + 1
-
-            # print(f'{self.name} expert: {best_key}')
-            # print(predictions)
-            # print()
 
     def act(self, state: State) -> Tuple[int, int]:
         if self.expert_to_use_name is not None:

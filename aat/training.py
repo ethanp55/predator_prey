@@ -78,11 +78,6 @@ for expert in expert_factory.generate_agents():
 
     with open(f'{data_dir}/{expert_name}_training_data.pickle', 'rb') as f:
         training_data = np.array(pickle.load(f))
-        # import sys
-        # np.set_printoptions(threshold=sys.maxsize)
-        # print(training_data)
-        # print(training_data[:, -1].mean())
-        # print(training_data[:, -2].mean())
 
     x = training_data[:, 0:-2]
 

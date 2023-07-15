@@ -53,7 +53,6 @@ def distance_function(x: List[float], y: List[float]) -> float:
     if len(x) != len(y):
         raise Exception(f'Invalid tuples with lengths {len(x)} and {len(y)}')
 
-    # round_num_dist = 2 * abs(x[0] - y[0])
     greedy_dist = 4 * abs(x[0] - y[0])
     planner_dist = 4 * abs(x[1] - y[1])
     collective_distance_dist = 4 * abs(x[2] - y[2])

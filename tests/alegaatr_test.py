@@ -30,6 +30,7 @@ N_EPOCHS = 30
 
 # Deterministic
 print('DETERMINISTIC')
+
 for height, width in dimensions:
     print((height, width))
     greedy_factory = SpecificExpertFactory('S', Greedy)
@@ -81,6 +82,7 @@ for height, width in dimensions:
 
 # Non-deterministic
 print('NON-DETERMINISTIC')
+
 for height, width in dimensions:
     print((height, width))
     greedy_prob_factory = SpecificExpertFactory('S', GreedyProbabilistic)
@@ -130,6 +132,7 @@ for height, width in dimensions:
 
 # Mixed
 print('MIXED')
+
 for height, width in dimensions:
     print((height, width))
     agent_types = [type(agent) for agent in test_agents]
